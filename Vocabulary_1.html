@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⏰ Adverbs & Time – Trainer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background: #f0f4f8;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .app {
+            max-width: 900px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 40px;
+            box-shadow: 0 20px 60px rgba(0, 20, 40, 0.12);
+            padding: 32px 28px;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #003399;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #003399;
+            font-weight: 700;
+        }
+        .header .badge {
+            font-size: 14px;
+            color: #5a6f8c;
+            background: #eef3f9;
+            padding: 4px 16px;
+            border-radius: 30px;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 10px 22px;
+            border-radius: 40px;
+            border: none;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+            background: #eef3f9;
+            color: #1f3a6b;
+        }
+        .tab-btn.active {
+            background: #003399;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 51, 153, 0.25);
+        }
+        .tab-btn:hover:not(.active) {
+            background: #d9e3f0;
+        }
+
+        /* PANELS */
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        /* PROGRESS */
+        .progress-bar-wrap {
+            width: 100%;
+            height: 8px;
+            background: #e6edf5;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #003399, #4a7db5);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        .step-counter {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #5a6f8c;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        /* QUESTION CARD */
+        .question-card {
+            background: #f9fcff;
+            border-radius: 24px;
+            padding: 28px 24px;
+            border: 1px solid #e7edf5;
+            min-height: 260px;
+            text-align: center;
+        }
+        .question-label {
+            font-size: 15px;
+            color: #5a6f8c;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        .word-display {
+            font-size: 36px;
+            font-weight: 700;
+            color: #003399;
+            margin: 16px 0;
+            letter-spacing: 2px;
+            word-break: break-word;
+            line-height: 1.4;
+            min-height: 60px;
+        }
+        .scramble-display {
+            font-size: 28px;
+            font-weight: 700;
+            color: #003399;
+            margin: 16px 0;
+            letter-spacing: 4px;
+            line-height: 1.8;
+            word-break: break-word;
+        }
+        .russian-display {
+            font-size: 30px;
+            font-weight: 700;
+            color: #003399;
+            margin: 16px 0;
+            line-height: 1.4;
+        }
+        .speak-btn {
+            background: #003399;
+            color: #fff;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 60px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            margin: 12px 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .speak-btn:hover {
+            background: #002277;
+            transform: scale(1.03);
+        }
+        .speak-btn:active {
+            transform: scale(0.97);
+        }
+        .speak-btn:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+        .audio-tools {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+        .wooordhunt-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border-radius: 60px;
+            border: 2px solid #003399;
+            background: transparent;
+            color: #003399;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .wooordhunt-link:hover {
+            background: #003399;
+            color: #fff;
+        }
+        .input-wrap {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .answer-input {
+            padding: 14px 20px;
+            border-radius: 40px;
+            border: 2px solid #ccd9e8;
+            font-size: 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            transition: 0.15s;
+            font-family: inherit;
+            color: #1a2b4a;
+        }
+        .answer-input:focus {
+            border-color: #003399;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(0, 51, 153, 0.12);
+        }
+        .answer-input.correct {
+            border-color: #1e7e34;
+            background: #e6f5ea;
+        }
+        .answer-input.wrong {
+            border-color: #c72a2a;
+            background: #fde8e8;
+        }
+        .feedback {
+            min-height: 34px;
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+        .feedback.ok { color: #1e7e34; }
+        .feedback.fail { color: #c72a2a; }
+
+        /* BUTTONS */
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn:hover { transform: scale(1.02); }
+        .btn-primary { background: #003399; color: #fff; }
+        .btn-primary:hover { background: #002277; }
+        .btn-success { background: #1e7e34; color: #fff; }
+        .btn-success:hover { background: #16632a; }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #003399;
+            color: #003399;
+        }
+        .btn-outline:hover { background: #003399; color: #fff; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        /* RESULT */
+        .result-box {
+            background: #f2f7ff;
+            border-radius: 24px;
+            padding: 28px;
+            margin-top: 8px;
+            border-left: 6px solid #003399;
+            text-align: center;
+        }
+        .result-box .score-big {
+            font-size: 46px;
+            font-weight: 700;
+            color: #003399;
+        }
+        .result-box .score-label {
+            font-size: 16px;
+            color: #4a5f7a;
+            margin-top: 4px;
+        }
+        .result-box .grade {
+            display: inline-block;
+            font-size: 22px;
+            font-weight: 700;
+            padding: 6px 24px;
+            border-radius: 40px;
+            background: #e6f5ea;
+            color: #1e7e34;
+            margin-top: 14px;
+        }
+        .result-box .grade.bad { background: #fde8e8; color: #c72a2a; }
+        .result-box .grade.mid { background: #fff3e0; color: #b36b00; }
+        .error-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0 0;
+            text-align: left;
+        }
+        .error-list li {
+            background: #fff;
+            border-left: 4px solid #c72a2a;
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-size: 15px;
+            color: #1a2b4a;
+        }
+        .error-list li .correct { color: #1e7e34; font-weight: 600; }
+
+        /* START BOX */
+        .start-box {
+            text-align: center;
+            padding: 30px 16px;
+        }
+        .start-box .emoji-big {
+            font-size: 52px;
+            margin-bottom: 8px;
+        }
+        .start-box h2 {
+            color: #003399;
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+        .start-box p {
+            color: #4a5f7a;
+            font-size: 15px;
+            margin-bottom: 16px;
+            line-height: 1.6;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .start-box .count {
+            display: inline-block;
+            background: #eef3f9;
+            color: #1f3a6b;
+            padding: 4px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 640px) {
+            .app { padding: 20px 16px; }
+            .header h1 { font-size: 20px; }
+            .word-display { font-size: 26px; }
+            .scramble-display { font-size: 22px; letter-spacing: 2px; }
+            .russian-display { font-size: 24px; }
+            .tab-btn { font-size: 13px; padding: 8px 14px; }
+            .answer-input { font-size: 17px; }
+            .btn { font-size: 14px; padding: 10px 22px; }
+            .result-box .score-big { font-size: 36px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>⏰ Adverbs &amp; Time</h1>
+        <span class="badge">by Olga Petrova</span>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab-btn active" data-target="dictation">🎧 Dictation</button>
+        <button class="tab-btn" data-target="scramble">🔤 Scramble</button>
+        <button class="tab-btn" data-target="translate">🌐 Translate</button>
+    </div>
+
+    <!-- ==================== DICTATION ==================== -->
+    <div class="panel active" id="dictationPanel">
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="dictationProgress"></div></div>
+        <div class="step-counter">
+            <span id="dictationStep">—</span>
+            <span id="dictationScore">✅ 0 · ❌ 0</span>
+        </div>
+        <div class="question-card">
+            <div class="start-box" id="dictationStart">
+                <div class="emoji-big">🎧</div>
+                <h2>Dictation</h2>
+                <p>Нажми на кнопку 🔊, чтобы услышать слово или фразу. Затем напиши её по-английски.</p>
+                <span class="count" id="dictationCount">21 слово</span><br>
+                <button class="btn btn-primary" onclick="startTask('dictation')">▶ Начать</button>
+            </div>
+            <div id="dictationBody" class="hidden">
+                <div class="question-label">Напиши, что услышишь:</div>
+                <div class="audio-tools">
+                    <button class="speak-btn" id="dictationSpeakBtn">🔊 Прослушать</button>
+                    <a class="wooordhunt-link" id="dictationWooordhuntLink" target="_blank">
+                        📖 Wooordhunt
+                    </a>
+                </div>
+                <div class="input-wrap">
+                    <input type="text" class="answer-input" id="dictationInput" placeholder="Type what you hear..." autocomplete="off" autocapitalize="off" spellcheck="false">
+                </div>
+                <div class="feedback" id="dictationFeedback"></div>
+                <div class="controls">
+                    <button class="btn btn-primary" id="dictationCheck">✔ Проверить</button>
+                    <button class="btn btn-success hidden" id="dictationNext">➡ Дальше</button>
+                </div>
+            </div>
+            <div class="result-box hidden" id="dictationResult"></div>
+        </div>
+    </div>
+
+    <!-- ==================== SCRAMBLE ==================== -->
+    <div class="panel" id="scramblePanel">
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="scrambleProgress"></div></div>
+        <div class="step-counter">
+            <span id="scrambleStep">—</span>
+            <span id="scrambleScore">✅ 0 · ❌ 0</span>
+        </div>
+        <div class="question-card">
+            <div class="start-box" id="scrambleStart">
+                <div class="emoji-big">🔤</div>
+                <h2>Scramble</h2>
+                <p>Буквы перепутаны. Восстанови слово или фразу и напиши её правильно.</p>
+                <span class="count" id="scrambleCount">21 слово</span><br>
+                <button class="btn btn-primary" onclick="startTask('scramble')">▶ Начать</button>
+            </div>
+            <div id="scrambleBody" class="hidden">
+                <div class="question-label">Расставь буквы в правильном порядке:</div>
+                <div class="scramble-display" id="scrambleDisplay">—</div>
+                <div class="input-wrap">
+                    <input type="text" class="answer-input" id="scrambleInput" placeholder="Type the correct word..." autocomplete="off" autocapitalize="off" spellcheck="false">
+                </div>
+                <div class="feedback" id="scrambleFeedback"></div>
+                <div class="controls">
+                    <button class="btn btn-primary" id="scrambleCheck">✔ Проверить</button>
+                    <button class="btn btn-success hidden" id="scrambleNext">➡ Дальше</button>
+                </div>
+            </div>
+            <div class="result-box hidden" id="scrambleResult"></div>
+        </div>
+    </div>
+
+    <!-- ==================== TRANSLATE ==================== -->
+    <div class="panel" id="translatePanel">
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="translateProgress"></div></div>
+        <div class="step-counter">
+            <span id="translateStep">—</span>
+            <span id="translateScore">✅ 0 · ❌ 0</span>
+        </div>
+        <div class="question-card">
+            <div class="start-box" id="translateStart">
+                <div class="emoji-big">🌐</div>
+                <h2>Translate</h2>
+                <p>Дано слово на русском. Напиши его по-английски.</p>
+                <span class="count" id="translateCount">21 слово</span><br>
+                <button class="btn btn-primary" onclick="startTask('translate')">▶ Начать</button>
+            </div>
+            <div id="translateBody" class="hidden">
+                <div class="question-label">Переведи на английский:</div>
+                <div class="russian-display" id="translateDisplay">—</div>
+                <div class="input-wrap">
+                    <input type="text" class="answer-input" id="translateInput" placeholder="Type in English..." autocomplete="off" autocapitalize="off" spellcheck="false">
+                </div>
+                <div class="feedback" id="translateFeedback"></div>
+                <div class="controls">
+                    <button class="btn btn-primary" id="translateCheck">✔ Проверить</button>
+                    <button class="btn btn-success hidden" id="translateNext">➡ Дальше</button>
+                </div>
+            </div>
+            <div class="result-box hidden" id="translateResult"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // ================================================================
+    //  СЛОВА
+    // ================================================================
+    const WORDS = [
+        { en: 'always', ru: 'всегда' },
+        { en: 'usually', ru: 'обычно' },
+        { en: 'sometimes', ru: 'иногда' },
+        { en: 'often', ru: 'часто' },
+        { en: 'rarely', ru: 'редко' },
+        { en: 'never', ru: 'никогда' },
+        { en: 'in the morning', ru: 'утром' },
+        { en: 'in the evening', ru: 'вечером' },
+        { en: 'in the afternoon', ru: 'днём' },
+        { en: 'at night', ru: 'ночью' },
+        { en: 'at weekends', ru: 'по выходным' },
+        { en: 'every morning', ru: 'каждое утро' },
+        { en: 'every day', ru: 'каждый день' },
+        { en: 'every night', ru: 'каждую ночь' },
+        { en: 'monday', ru: 'понедельник' },
+        { en: 'tuesday', ru: 'вторник' },
+        { en: 'wednesday', ru: 'среда' },
+        { en: 'thursday', ru: 'четверг' },
+        { en: 'friday', ru: 'пятница' },
+        { en: 'sunday', ru: 'воскресенье' },
+        { en: 'saturday', ru: 'суббота' }
+    ];
+
+    // ================================================================
+    //  СОСТОЯНИЕ
+    // ================================================================
+    const state = {
+        dictation: { order: [], current: 0, correct: 0, wrong: 0, mistakes: [], answered: false },
+        scramble:  { order: [], current: 0, correct: 0, wrong: 0, mistakes: [], answered: false },
+        translate: { order: [], current: 0, correct: 0, wrong: 0, mistakes: [], answered: false }
+    };
+
+    // ================================================================
+    //  УТИЛИТЫ
+    // ================================================================
+    function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function normalize(str) {
+        return (str || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[.,!?;:]/g, '');
+    }
+
+    function scrambleLetters(word) {
+        return word.split(' ').map(w => {
+            if (w.length <= 1) return w;
+            const arr = w.split('');
+            if (new Set(arr).size === 1) return w;
+            for (let attempt = 0; attempt < 20; attempt++) {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                if (arr.join('') !== w) break;
+            }
+            return arr.join('');
+        }).join(' ');
+    }
+
+    // ================================================================
+    //  ОЗВУЧКА — гибридная: Google TTS + fallback на браузерный синтез
+    // ================================================================
+    let currentAudio = null;
+
+    function speakText(text) {
+        // Останавливаем предыдущее аудио
+        if (currentAudio) {
+            try { currentAudio.pause(); } catch(e) {}
+            currentAudio = null;
+        }
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+        }
+
+        // Сначала пробуем Google Translate TTS (лучшее качество)
+        const url = 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q='
+                    + encodeURIComponent(text);
+
+        const audio = new Audio(url);
+        currentAudio = audio;
+
+        audio.play().catch(() => {
+            // Если Google недоступен — используем браузерный синтезатор
+            fallbackSpeak(text);
+        });
+    }
+
+    function fallbackSpeak(text) {
+        if (!('speechSynthesis' in window)) {
+            alert('Озвучка недоступна. Откройте слово в Wooordhunt.');
+            return;
+        }
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+        u.rate = 0.8;
+
+        const voices = window.speechSynthesis.getVoices();
+        // Приоритет лучшим голосам
+        const preferred = voices.find(v => v.name === 'Google UK English Female')
+            || voices.find(v => v.name === 'Google US English')
+            || voices.find(v => v.name && v.name.includes('Samantha'))
+            || voices.find(v => v.lang && v.lang.toLowerCase().startsWith('en-gb'))
+            || voices.find(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+
+        if (preferred) u.voice = preferred;
+        window.speechSynthesis.speak(u);
+    }
+
+    // ================================================================
+    //  ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
+    // ================================================================
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(btn.dataset.target + 'Panel').classList.add('active');
+        });
+    });
+
+    // ================================================================
+    //  СТАРТ
+    // ================================================================
+    function startTask(task) {
+        const s = state[task];
+        s.order = shuffle(WORDS);
+        s.current = 0;
+        s.correct = 0;
+        s.wrong = 0;
+        s.mistakes = [];
+        s.answered = false;
+
+        document.getElementById(task + 'Start').classList.add('hidden');
+        document.getElementById(task + 'Result').classList.add('hidden');
+        document.getElementById(task + 'Body').classList.remove('hidden');
+
+        renderQuestion(task);
+    }
+
+    // ================================================================
+    //  ОТРИСОВКА ВОПРОСА
+    // ================================================================
+    function renderQuestion(task) {
+        const s = state[task];
+        const total = s.order.length;
+        const q = s.order[s.current];
+        s.answered = false;
+
+        document.getElementById(task + 'Progress').style.width = (s.current / total * 100) + '%';
+        document.getElementById(task + 'Step').textContent = `Вопрос ${s.current + 1} из ${total}`;
+        document.getElementById(task + 'Score').textContent = `✅ ${s.correct} · ❌ ${s.wrong}`;
+
+        const input = document.getElementById(task + 'Input');
+        input.value = '';
+        input.disabled = false;
+        input.className = 'answer-input';
+
+        const feedback = document.getElementById(task + 'Feedback');
+        feedback.textContent = '';
+        feedback.className = 'feedback';
+
+        document.getElementById(task + 'Check').classList.remove('hidden');
+        document.getElementById(task + 'Check').disabled = false;
+        document.getElementById(task + 'Next').classList.add('hidden');
+
+        if (task === 'dictation') {
+            const speakBtn = document.getElementById('dictationSpeakBtn');
+            speakBtn.onclick = () => speakText(q.en);
+
+            // Обновляем ссылку на Wooordhunt
+            const wooordhuntLink = document.getElementById('dictationWooordhuntLink');
+            wooordhuntLink.href = 'https://wooordhunt.ru/word/' + encodeURIComponent(q.en);
+
+            // Автоматическая озвучка через 400 мс
+            setTimeout(() => speakText(q.en), 400);
+        } else if (task === 'scramble') {
+            document.getElementById('scrambleDisplay').textContent = scrambleLetters(q.en);
+        } else if (task === 'translate') {
+            document.getElementById('translateDisplay').textContent = q.ru;
+        }
+
+        setTimeout(() => input.focus(), 100);
+    }
+
+    // ================================================================
+    //  ПРОВЕРКА
+    // ================================================================
+    function checkAnswer(task) {
+        const s = state[task];
+        if (s.answered) return;
+        const q = s.order[s.current];
+        const input = document.getElementById(task + 'Input');
+        const feedback = document.getElementById(task + 'Feedback');
+        const userAns = normalize(input.value);
+        const correctAns = normalize(q.en);
+
+        if (!userAns) {
+            feedback.textContent = '✏️ Напиши ответ!';
+            feedback.className = 'feedback fail';
+            return;
+        }
+
+        s.answered = true;
+
+        if (userAns === correctAns) {
+            input.classList.add('correct');
+            feedback.textContent = '✅ Правильно!';
+            feedback.className = 'feedback ok';
+            s.correct++;
+        } else {
+            input.classList.add('wrong');
+            feedback.innerHTML = '❌ Неверно. Правильный ответ: <strong>' + q.en + '</strong>';
+            feedback.className = 'feedback fail';
+            s.wrong++;
+            s.mistakes.push({ en: q.en, ru: q.ru, userAnswer: input.value.trim() });
+        }
+
+        document.getElementById(task + 'Score').textContent = `✅ ${s.correct} · ❌ ${s.wrong}`;
+        input.disabled = true;
+        document.getElementById(task + 'Check').classList.add('hidden');
+        const nextBtn = document.getElementById(task + 'Next');
+        nextBtn.classList.remove('hidden');
+        nextBtn.focus();
+    }
+
+    // ================================================================
+    //  СЛЕДУЮЩИЙ
+    // ================================================================
+    function nextQuestion(task) {
+        const s = state[task];
+        s.current++;
+        if (s.current >= s.order.length) {
+            finishTask(task);
+        } else {
+            renderQuestion(task);
+        }
+    }
+
+    // ================================================================
+    //  ФИНАЛ
+    // ================================================================
+    function finishTask(task) {
+        const s = state[task];
+        document.getElementById(task + 'Body').classList.add('hidden');
+
+        const total = s.order.length;
+        const percent = Math.round((s.correct / total) * 100);
+        let grade, gradeClass;
+        if (percent >= 90) { grade = '5 (Отлично)'; gradeClass = ''; }
+        else if (percent >= 75) { grade = '4 (Хорошо)'; gradeClass = 'mid'; }
+        else if (percent >= 50) { grade = '3 (Удовлетворительно)'; gradeClass = 'mid'; }
+        else { grade = '2 (Повтори ещё раз)'; gradeClass = 'bad'; }
+
+        let errorHtml = '';
+        if (s.mistakes.length > 0) {
+            errorHtml = '<ul class="error-list">';
+            s.mistakes.forEach(m => {
+                errorHtml += `<li>
+                    <div>Твой ответ: <span style="color:#c72a2a;">${m.userAnswer || '(пусто)'}</span></div>
+                    <div class="correct">✅ Правильно: ${m.en} (${m.ru})</div>
+                </li>`;
+            });
+            errorHtml += '</ul>';
+        } else {
+            errorHtml = '<p style="color:#1e7e34; font-weight:500; margin-top:16px;">✨ Ни одной ошибки! Отлично!</p>';
+        }
+
+        const resultBox = document.getElementById(task + 'Result');
+        resultBox.innerHTML = `
+            <div class="score-big">${percent}%</div>
+            <div class="score-label">${s.correct} из ${total} правильных</div>
+            <div class="grade ${gradeClass}">${grade}</div>
+            ${errorHtml}
+            <div style="margin-top:20px;">
+                <button class="btn btn-primary" onclick="startTask('${task}')">🔄 Пройти заново</button>
+            </div>
+        `;
+        resultBox.classList.remove('hidden');
+
+        document.getElementById(task + 'Progress').style.width = '100%';
+        document.getElementById(task + 'Step').textContent = 'Готово!';
+        document.getElementById(task + 'Score').textContent = `✅ ${s.correct} · ❌ ${s.wrong}`;
+    }
+
+    // ================================================================
+    //  СОБЫТИЯ
+    // ================================================================
+    ['dictation', 'scramble', 'translate'].forEach(task => {
+        document.getElementById(task + 'Check').addEventListener('click', () => checkAnswer(task));
+        document.getElementById(task + 'Next').addEventListener('click', () => nextQuestion(task));
+        document.getElementById(task + 'Input').addEventListener('keydown', e => {
+            if (e.key === 'Enter') {
+                const s = state[task];
+                if (s.answered) nextQuestion(task);
+                else checkAnswer(task);
+            }
+        });
+    });
+
+    // Счётчики на стартовых экранах
+    ['dictation', 'scramble', 'translate'].forEach(task => {
+        document.getElementById(task + 'Count').textContent = WORDS.length + ' слов';
+    });
+
+    // Загрузка голосов
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = () => {
+            window.speechSynthesis.getVoices();
+        };
+    }
+</script>
+</body>
+</html>
